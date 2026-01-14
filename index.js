@@ -76,6 +76,9 @@ app.post('/generate-poem', async (req, res) => {
   }
 
   try {
+    console.log('Request received:', { mood, words, type, lines });
+    console.log('Groq API Key loaded:', !!process.env.GROQ_API_KEY);
+    
     const numLines = type === "haiku" ? (lines || 3) : null;
 
     // Pick a random template
@@ -88,28 +91,41 @@ app.post('/generate-poem', async (req, res) => {
       .replace('{words}', words)
       .replace('{lines}', numLines);
 
+    console.log('Prompt:', prompt);
+
     // Call Groq API
     const response = await axios.post(
       'https://api.groq.com/openai/v1/chat/completions',
       {
         model: "mixtral-8x7b-32768",
         messages: [{ role: "user", content: prompt }],
-        max_tokens: 1024
+        max_tokens: 1024,
+        temperature: 0.7
       },
       {
         headers: {
           'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
           'Content-Type': 'application/json'
-        }
+        },
+        timeout: 30000
       }
     );
 
+    console.log('Groq API response received');
     const poem = response.data?.choices?.[0]?.message?.content || "No poem generated";
     res.json({ poem });
 
   } catch (error) {
-    console.error(error.response?.data || error.message);
-    res.status(500).json({ error: "Failed to generate poem" });
+    console.error('❌ ERROR Details:');
+    console.error('Message:', error.message);
+    console.error('Status:', error.response?.status);
+    console.error('Data:', error.response?.data);
+    console.error('Full error:', error);
+    
+    res.status(500).json({ 
+      error: "Failed to generate poem",
+      details: error.response?.data || error.message
+    });
   }
 });
 
