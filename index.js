@@ -97,7 +97,7 @@ app.post('/generate-poem', async (req, res) => {
     const response = await axios.post(
       'https://api.groq.com/openai/v1/chat/completions',
       {
-        model: "llama2-70b-4096",
+        model: "mixtral-8x7b-32768",
         messages: [{ role: "user", content: prompt }],
         max_tokens: 1024,
         temperature: 0.7
@@ -120,11 +120,10 @@ app.post('/generate-poem', async (req, res) => {
     console.error('Message:', error.message);
     console.error('Status:', error.response?.status);
     console.error('Data:', error.response?.data);
-    console.error('Full error:', error);
     
     res.status(500).json({ 
       error: "Failed to generate poem",
-      details: error.response?.data || error.message
+      details: error.response?.data?.error?.message || error.message
     });
   }
 });
