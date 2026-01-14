@@ -12,31 +12,31 @@ const PORT = process.env.PORT || 5000;
 
 // 25 Haiku templates
 const haikuTemplates = [
-  `Write a {lines}-line haiku about {mood} using these words: {words}.`,
-  `Create a {lines}-line haiku inspired by {mood} with the words: {words}.`,
-  `Compose a {lines}-line haiku reflecting {mood} including: {words}.`,
-  `Generate a {lines}-line haiku themed around {mood}, using: {words}.`,
-  `Write a {lines}-line haiku expressing {mood} with these words: {words}.`,
-  `Craft a {lines}-line haiku about {mood} incorporating these words: {words}.`,
-  `Pen a {lines}-line haiku that captures {mood} using words: {words}.`,
-  `Design a {lines}-line haiku expressing {mood} and including: {words}.`,
-  `Create a {lines}-line haiku illustrating {mood} with the words: {words}.`,
-  `Write a {lines}-line haiku depicting {mood} and weaving in: {words}.`,
-  `Formulate a {lines}-line haiku about {mood} using the words: {words}.`,
-  `Compose a {lines}-line haiku that conveys {mood} with these words: {words}.`,
-  `Write a {lines}-line haiku inspired by {mood}, using: {words}.`,
-  `Generate a {lines}-line haiku expressing {mood} while including: {words}.`,
-  `Create a {lines}-line haiku capturing {mood} with words: {words}.`,
-  `Design a {lines}-line haiku reflecting {mood}, incorporating: {words}.`,
-  `Write a {lines}-line haiku portraying {mood} with these words: {words}.`,
-  `Compose a {lines}-line haiku about {mood} weaving in: {words}.`,
-  `Craft a {lines}-line haiku that embodies {mood} using words: {words}.`,
-  `Generate a {lines}-line haiku evoking {mood} and including: {words}.`,
-  `Write a {lines}-line haiku describing {mood} with these words: {words}.`,
-  `Create a {lines}-line haiku that mirrors {mood} and uses: {words}.`,
-  `Compose a {lines}-line haiku capturing the essence of {mood} with: {words}.`,
-  `Write a {lines}-line haiku portraying {mood} and weaving in: {words}.`,
-  `Generate a {lines}-line haiku reflecting {mood} and including these words: {words}.`
+  `Write a {lines}-lines haiku about {mood} using these words: {words}.`,
+  `Create a {lines}-lines haiku inspired by {mood} with the words: {words}.`,
+  `Compose a {lines}-lines haiku reflecting {mood} including: {words}.`,
+  `Generate a {lines}-lines haiku themed around {mood}, using: {words}.`,
+  `Write a {lines}-lines haiku expressing {mood} with these words: {words}.`,
+  `Craft a {lines}-lines haiku about {mood} incorporating these words: {words}.`,
+  `Pen a {lines}-lines haiku that captures {mood} using words: {words}.`,
+  `Design a {lines}-lines haiku expressing {mood} and including: {words}.`,
+  `Create a {lines}-lines haiku illustrating {mood} with the words: {words}.`,
+  `Write a {lines}-lines haiku depicting {mood} and weaving in: {words}.`,
+  `Formulate a {lines}-lines haiku about {mood} using the words: {words}.`,
+  `Compose a {lines}-lines haiku that conveys {mood} with these words: {words}.`,
+  `Write a {lines}-lines haiku inspired by {mood}, using: {words}.`,
+  `Generate a {lines}-lines haiku expressing {mood} while including: {words}.`,
+  `Create a {lines}-lines haiku capturing {mood} with words: {words}.`,
+  `Design a {lines}-lines haiku reflecting {mood}, incorporating: {words}.`,
+  `Write a {lines}-lines haiku portraying {mood} with these words: {words}.`,
+  `Compose a {lines}-lines haiku about {mood} weaving in: {words}.`,
+  `Craft a {lines}-lines haiku that embodies {mood} using words: {words}.`,
+  `Generate a {lines}-lines haiku evoking {mood} and including: {words}.`,
+  `Write a {lines}-lines haiku describing {mood} with these words: {words}.`,
+  `Create a {lines}-lines haiku that mirrors {mood} and uses: {words}.`,
+  `Compose a {lines}-lines haiku capturing the essence of {mood} with: {words}.`,
+  `Write a {lines}-lines haiku portraying {mood} and weaving in: {words}.`,
+  `Generate a {lines}-lines haiku reflecting {mood} and including these words: {words}.`
 ];
 
 // 25 Free Verse templates
@@ -88,17 +88,18 @@ app.post('/generate-poem', async (req, res) => {
       .replace('{words}', words)
       .replace('{lines}', numLines);
 
-    // Call Pollinations AI API
+    // Call Groq API
     const response = await axios.post(
-      'https://text.pollinations.ai/openai',
+      'https://api.groq.com/openai/v1/chat/completions',
       {
-        model: "openai-large",
-        messages: [{ role: "user", content: prompt }]
+        model: "mixtral-8x7b-32768",
+        messages: [{ role: "user", content: prompt }],
+        max_tokens: 1024
       },
       {
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.POLLINATIONS_API_KEY}` // optional
+          'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
+          'Content-Type': 'application/json'
         }
       }
     );
