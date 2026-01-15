@@ -97,7 +97,7 @@ app.post('/generate-poem', async (req, res) => {
     const response = await axios.post(
       'https://api.groq.com/openai/v1/chat/completions',
       {
-        model: "mixtral-8x7b-32768",
+        model: "llama-3.3-70b-versatile",
         messages: [{ role: "user", content: prompt }],
         max_tokens: 1024,
         temperature: 0.7
